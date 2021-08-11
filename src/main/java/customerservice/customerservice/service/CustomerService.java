@@ -2,6 +2,8 @@ package customerservice.customerservice.service;
 
 import customerservice.customerservice.data.CustomerRepository;
 import customerservice.customerservice.domain.Customer;
+import customerservice.customerservice.domain.OrderPlacedEvent;
+import customerservice.customerservice.integration.CustomerEmailService;
 import customerservice.customerservice.service.dtos.CustomerDTO;
 import customerservice.customerservice.service.dtos.CustomersDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class CustomerService {
 
     @Autowired
     private CustomerRepository repository;
+
+    @Autowired
+    private CustomerEmailService emailService;
 
     public CustomerDTO save(CustomerDTO dto) {
         Customer customer = adapterService.getCustomerFromDTO(dto);
@@ -36,5 +41,11 @@ public class CustomerService {
     public CustomersDTO findAll() {
         List<Customer> customers = repository.findAll();
         return adapterService.getDTOFromCustomers(customers);
+    }
+
+    public void handleOrderPlaced(OrderPlacedEvent event) {
+        CustomerDTO customer = this.findById(event.getCustomerId());
+        String message = "Dear " + customer.getFirstName() + " " + customer.getLastName() + " your order is placed successfully ";
+        emailService.sendEmailToCustomer(customer.getEmail(), message);
     }
 }
