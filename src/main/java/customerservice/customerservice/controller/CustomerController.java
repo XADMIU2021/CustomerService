@@ -4,8 +4,8 @@ import customerservice.customerservice.service.CustomLoggerService;
 import customerservice.customerservice.service.CustomerService;
 import customerservice.customerservice.service.dtos.CustomerDTO;
 import customerservice.customerservice.service.dtos.CustomersDTO;
-import org.bouncycastle.cert.ocsp.RespID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +18,12 @@ public class CustomerController {
     @Autowired
     private CustomLoggerService loggerService;
 
+//    @Value("${greeting}")
+//    private String message;
+
     @GetMapping("/customer")
     public ResponseEntity<CustomersDTO> getAllCustomers() {
+//        System.out.println("----------------" + message);
         CustomersDTO dto = customerService.findAll();
         loggerService.log("customer fetched");
         return new ResponseEntity<CustomersDTO>(dto, HttpStatus.OK);
