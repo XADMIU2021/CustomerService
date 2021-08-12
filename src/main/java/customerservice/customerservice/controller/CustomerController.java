@@ -1,5 +1,6 @@
 package customerservice.customerservice.controller;
 
+import customerservice.customerservice.service.CustomLoggerService;
 import customerservice.customerservice.service.CustomerService;
 import customerservice.customerservice.service.dtos.CustomerDTO;
 import customerservice.customerservice.service.dtos.CustomersDTO;
@@ -14,15 +15,20 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private CustomLoggerService loggerService;
+
     @GetMapping("/customer")
     public ResponseEntity<CustomersDTO> getAllCustomers() {
         CustomersDTO dto = customerService.findAll();
+        loggerService.log("customer fetched");
         return new ResponseEntity<CustomersDTO>(dto, HttpStatus.OK);
     }
 
     @PostMapping("/customer")
     public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody CustomerDTO dto) {
         customerService.save(dto);
+        loggerService.log("customer created, FirstName: " + dto.getFirstName());
         return new ResponseEntity<CustomerDTO>(dto, HttpStatus.CREATED);
     }
 
